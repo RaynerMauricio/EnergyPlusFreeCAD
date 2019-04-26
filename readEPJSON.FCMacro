@@ -1,0 +1,33 @@
+listaZonas = Gui.Selection.getSelection()
+
+# estou testando para uma zona apenas
+listaVetores = listaZonas[0].Shape.Edges
+
+listaXMin = list()
+listaYMin = list()
+listaZMin = list()
+
+for i in listaVetores:
+	vetor = i.BoundBox
+	listaXMin.append(vetor.XMin)
+	listaYMin.append(vetor.YMin)
+	listaZMin.append(vetor.ZMin)
+
+XMin = 0-min(listaXMin)
+YMin = 0-min(listaYMin)
+ZMin = 0-min(listaZMin)
+
+for i in listaVetores:
+	vetor = i.BoundBox
+	vetor.XMax = vetor.XMax + XMin
+	vetor.YMax = vetor.YMax + YMin
+	vetor.ZMax = vetor.ZMax + ZMin
+	vetor.XMin = vetor.XMin + XMin
+	vetor.YMin = vetor.YMin + YMin
+	vetor.ZMin = vetor.ZMin + ZMin
+
+App.Console.PrintMessage([vetor.XMin, vetor.YMin])
+
+#file = open(App.ActiveDocument.FileName[:App.ActiveDocument.FileName.rfind('/')+1]+"test.txt", "w")
+#file.write("AAAAAA")
+#file.close()
