@@ -5,13 +5,14 @@ pathfile = App.ActiveDocument.FileName[:App.ActiveDocument.FileName.rfind('/')+1
 
 # AllObject
 allobject_pathfile = pathfile+"/AllObject/AllObject.V901.epJSON"
-allobject = json.loads(open(allobjectpathfile, 'r').read())
+allobject = json.loads(open(allobject_pathfile, 'r').read())
 
 # lista das zonas selecionadas
 listaZonas = Gui.Selection.getSelection()
 
 # testando para cada zona
 listaVetores = listaZonas[0].Shape.Edges
+
 
 listaXMin = list()
 listaYMin = list()
