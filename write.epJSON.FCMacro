@@ -1,3 +1,12 @@
+import json
+
+# caminho do arquivo selecionado
+pathfile = App.ActiveDocument.FileName[:App.ActiveDocument.FileName.rfind('/')+1]
+
+# AllObject
+allobject_pathfile = pathfile+"/AllObject/AllObject.V901.epJSON"
+allobject = json.loads(open(allobjectpathfile, 'r').read())
+
 # lista das zonas selecionadas
 listaZonas = Gui.Selection.getSelection()
 
@@ -27,8 +36,8 @@ for i in listaVetores:
 	vetor.YMin = vetor.YMin + YMin
 	vetor.ZMin = vetor.ZMin + ZMin
 
-App.Console.PrintMessage([vetor.XMin, vetor.YMin])
+App.Console.PrintMessage([listaXMin,listaYMin])
 
-file = open(App.ActiveDocument.FileName[:App.ActiveDocument.FileName.rfind('/')+1]+"test.txt", "w")
-file.write("AAAAAA")
-file.close()
+epJSON = {}
+
+json.dump(epJSON, open(pathfile+'geometry.epJSON','w'))
