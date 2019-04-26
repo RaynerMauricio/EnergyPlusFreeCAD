@@ -1,6 +1,7 @@
+# lista das zonas selecionadas
 listaZonas = Gui.Selection.getSelection()
 
-# estou testando para uma zona apenas
+# testando para cada zona
 listaVetores = listaZonas[0].Shape.Edges
 
 listaXMin = list()
@@ -28,6 +29,6 @@ for i in listaVetores:
 
 App.Console.PrintMessage([vetor.XMin, vetor.YMin])
 
-#file = open(App.ActiveDocument.FileName[:App.ActiveDocument.FileName.rfind('/')+1]+"test.txt", "w")
-#file.write("AAAAAA")
-#file.close()
+file = open(App.ActiveDocument.FileName[:App.ActiveDocument.FileName.rfind('/')+1]+"test.txt", "w")
+file.write("AAAAAA")
+file.close()
