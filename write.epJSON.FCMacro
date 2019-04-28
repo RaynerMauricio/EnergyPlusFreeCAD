@@ -1,43 +1,105 @@
 import json
+from PySide import QtGui, QtCore
+from string import digits
 
 # caminho do arquivo selecionado
 pathfile = App.ActiveDocument.FileName[:App.ActiveDocument.FileName.rfind('/')+1]
 
-# AllObject
-allobject_pathfile = pathfile+"/AllObject/AllObject.V901.epJSON"
-allobject = json.loads(open(allobjectpathfile, 'r').read())
-
-# lista das zonas selecionadas
-listaZonas = Gui.Selection.getSelection()
-
-# testando para cada zona
-listaVetores = listaZonas[0].Shape.Edges
-
-listaXMin = list()
-listaYMin = list()
-listaZMin = list()
-
-for i in listaVetores:
-	vetor = i.BoundBox
-	listaXMin.append(vetor.XMin)
-	listaYMin.append(vetor.YMin)
-	listaZMin.append(vetor.ZMin)
-
-XMin = 0-min(listaXMin)
-YMin = 0-min(listaYMin)
-ZMin = 0-min(listaZMin)
-
-for i in listaVetores:
-	vetor = i.BoundBox
-	vetor.XMax = vetor.XMax + XMin
-	vetor.YMax = vetor.YMax + YMin
-	vetor.ZMax = vetor.ZMax + ZMin
-	vetor.XMin = vetor.XMin + XMin
-	vetor.YMin = vetor.YMin + YMin
-	vetor.ZMin = vetor.ZMin + ZMin
-
-App.Console.PrintMessage([listaXMin,listaYMin])
-
 epJSON = {}
 
+# lista das zonas selecionadas
+listaZonas = Gui.Selection.getSelectionEx()
+
+if listaZonas != []:
+	
+	for cada in range(len(listaZonas)):
+
+		zona = listaZonas[cada]
+
+		if 'DWire' in zona.ObjectName:
+			
+			pontos = [list(i) for i in zona.Object.Points]
+
+			contorno = zona.Object.Shape.BoundBox
+			
+			listaXMin, listaYMin, listaZMin = [], [], []
+			
+			nomeZona = zona.Object.Label.decode()
+
+			listaVetores = zona.Object.Shape.Edges
+			numeroVetores = len(listaVetores)
+
+			for i in listaVetores:
+				contorno = i.BoundBox
+				listaXMin.append(contorno.XMin)
+				listaYMin.append(contorno.YMin)
+				listaZMin.append(contorno.ZMin)
+
+			XMin = min(listaXMin)
+			YMin = min(listaYMin)
+			ZMin = min(listaZMin)
+
+			origem = [XMin, YMin, ZMin]				
+
+		elif 'Rectangle' in zona.ObjectName:
+			
+			pontos = []
+		 	
+		 	for i in zona.Object.Shape.Edges:
+		 		
+		 		contorno = i.BoundBox
+		 		direcao = list(i.Curve.Direction)
+		 		direcao = [i*i for i in direcao]
+
+				listaXMin, listaYMin, listaZMin = [], [], []
+			
+				listaVetores = zona.Object.Shape.Edges
+				nomeZona = zona.Object.Label.decode()
+				numeroVetores = len(listaVetores)
+
+				for i in listaVetores:
+					contorno = i.BoundBox
+					listaXMin.append(contorno.XMin)
+					listaYMin.append(contorno.YMin)
+					listaZMin.append(contorno.ZMin)
+			
+				XMin = min(listaXMin)
+				YMin = min(listaYMin)
+				ZMin = min(listaZMin)
+				origem = [XMin, YMin, ZMin]
+
+		 		contorno.XMax = contorno.XMax
+				contorno.YMax = contorno.YMax
+				contorno.ZMax = contorno.ZMax
+				contorno.XMin = contorno.XMin
+				contorno.YMin = contorno.YMin
+				contorno.ZMin = contorno.ZMin
+
+		 		if 1 == math.copysign(1,direcao[0]) and -1 == math.copysign(1,direcao[1]):
+		 			pontos.extend([contorno.XMin, contorno.YMax, contorno.ZMin])
+		 			pontos.extend([contorno.XMax, contorno.YMin, contorno.ZMax])
+				else:
+		 			pontos.extend([contorno.XMin, contorno.YMin, contorno.ZMin])
+		 			pontos.extend([contorno.XMax, contorno.YMax, contorno.ZMax])
+		
+		else:
+			reply = QtGui.QMessageBox.information(None,"","Use DWire ou Rectangle.")
+
+		epJSON[nomeZona] = {}
+		epJSON[nomeZona]['vetores'] = [[] for i in range(numeroVetores)]
+		epJSON[nomeZona]['origem'] = origem
+
+		num = 0
+		while num < numeroVetores-1:
+			epJSON[nomeZona]['vetores'][num] = [pontos[num], pontos[num+1]]
+			num += 1
+		epJSON[nomeZona]['vetores'][num] = [pontos[num], pontos[0]]
+
 json.dump(epJSON, open(pathfile+'geometry.epJSON','w'))
+
+'''
+#Gui.Selection.getPreselection()
+#list(vetor.getPoint(0))
+#App.Console.PrintMessage("teste")
+#reply = QtGui.QMessageBox.information(None,"","teste")
+'''
