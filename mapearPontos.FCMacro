@@ -1,0 +1,10 @@
+zona = Gui.Selection.getSelectionEx()[0] # pegar uma zona somente
+
+tamanho = len(z.Object.Points)
+p = [[] for i in range(tamanho)]
+
+for i in range(tamanho):
+	p[i] = zona.Object.Points[i]
+
+p[0].cross(p[1])
+p[0].cross(p[-1])

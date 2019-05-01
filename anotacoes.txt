@@ -1,0 +1,7 @@
+- a origem tem que partir de um ponto especifico
+- a partir do no inicial (origem) verificar o sentido do giro para os proximos elementos
+- giro positivo e sentido horario giro negativo e sentido contrario
+- o somatorio dos nos dara o centro da zona assim da para definir o que e externo ou interno
+- definir paredes externas
+- definir paredes geminadas
+- fazer os pontos relativos a cada zona
