@@ -24,6 +24,7 @@ class inir_gui_class(QtGui.QDialog):
 
 	def funCancelar(self):
 		self.close()
+		
 	def funepJSON(self):
 		# caminho do arquivo selecionado
 		pathfile = App.ActiveDocument.FileName[:App.ActiveDocument.FileName.rfind('/')+1]
@@ -63,45 +64,45 @@ class inir_gui_class(QtGui.QDialog):
 					ZMin = min(listaZMin)
 		
 					origem = [XMin, YMin, ZMin]				
-		
+
 				elif 'Rectangle' in zona.ObjectName:
 					
 					pontos = []
 				 	
-				 	for i in zona.Object.Shape.Edges:
+					for i in zona.Object.Shape.Edges:
 				 		
 				 		contorno = i.BoundBox
 				 		direcao = list(i.Curve.Direction)
 				 		direcao = [i*i for i in direcao]
-		
-						listaXMin, listaYMin, listaZMin = [], [], []
+				
+				 		listaXMin, listaYMin, listaZMin = [], [], []
 					
-						listaVetores = zona.Object.Shape.Edges
-						nomeZona = zona.Object.Label.decode()
-						numeroVetores = len(listaVetores)
+				 		listaVetores = zona.Object.Shape.Edges
+				 		nomeZona = zona.Object.Label.decode()
+				 		numeroVetores = len(listaVetores)
 		
-						for i in listaVetores:
-							contorno = i.BoundBox
-							listaXMin.append(contorno.XMin)
-							listaYMin.append(contorno.YMin)
-							listaZMin.append(contorno.ZMin)
+				 		for i in listaVetores:
+				 			contorno = i.BoundBox
+				 			listaXMin.append(contorno.XMin)
+				 			listaYMin.append(contorno.YMin)
+				 			listaZMin.append(contorno.ZMin)
 					
-						XMin = min(listaXMin)
-						YMin = min(listaYMin)
-						ZMin = min(listaZMin)
-						origem = [XMin, YMin, ZMin]
+				 		XMin = min(listaXMin)
+				 		YMin = min(listaYMin)
+				 		ZMin = min(listaZMin)
+				 		origem = [XMin, YMin, ZMin]
 		
 				 		contorno.XMax = contorno.XMax
-						contorno.YMax = contorno.YMax
-						contorno.ZMax = contorno.ZMax
-						contorno.XMin = contorno.XMin
-						contorno.YMin = contorno.YMin
-						contorno.ZMin = contorno.ZMin
+				 		contorno.YMax = contorno.YMax
+				 		contorno.ZMax = contorno.ZMax
+				 		contorno.XMin = contorno.XMin
+				 		contorno.YMin = contorno.YMin
+				 		contorno.ZMin = contorno.ZMin
 		
 				 		if 1 == math.copysign(1,direcao[0]) and -1 == math.copysign(1,direcao[1]):
 				 			pontos.extend([contorno.XMin, contorno.YMax, contorno.ZMin])
 				 			pontos.extend([contorno.XMax, contorno.YMin, contorno.ZMax])
-						else:
+				 		else:
 				 			pontos.extend([contorno.XMin, contorno.YMin, contorno.ZMin])
 				 			pontos.extend([contorno.XMax, contorno.YMax, contorno.ZMax])
 				
@@ -118,7 +119,9 @@ class inir_gui_class(QtGui.QDialog):
 					num += 1
 				epJSON[nomeZona]['vetores'][num] = [pontos[num], pontos[0]]
 		
+		QtGui.QMessageBox.information(None,"","teste")
 		json.dump(epJSON, open(pathfile+'geometry.epJSON','w'))
+		#App.Console.PrintMessage(pathfile+'geometry.epJSON')
 
 executar = inir_gui_class()
 executar.exec_()

@@ -1,0 +1,30 @@
+import json
+
+nomeArquivo = FreeCAD.ActiveDocument.Label
+pathfile = App.ActiveDocument.FileName[:App.ActiveDocument.FileName.rfind('/')+1]
+
+epJSON = {}
+
+listaZonas = Gui.Selection.getSelectionEx()
+
+for zona in listaZonas:
+    nomeZona = zona.ObjectName
+    epJSON[nomeZona] = {}
+    objZona = FreeCAD.getDocument(nomeArquivo).getObject(nomeZona)
+
+    centroZona = list(objZona.Shape.CenterOfMass)
+    epJSON[nomeZona]['centroZona'] = centroZona
+
+    paredes = objZona.Shape.OuterWire.Edges
+
+    epJSON[nomeZona]['altura'] = 0
+    epJSON[nomeZona]['pedireito'] = 3
+    epJSON[nomeZona]['paredes'] = []
+
+    for parede in paredes:
+        vertice1 = list(parede.Vertexes[0].Point)[:-1]
+        vertice2 = list(parede.Vertexes[1].Point)[:-1]
+        epJSON[nomeZona]['paredes'].append([vertice1, vertice2])
+
+json.dump(epJSON, open(pathfile+'geometry.epJSON','w'))
+App.Console.PrintMessage('geometry.epJSON foi criado em ' + pathfile)

@@ -1,6 +1,7 @@
 import math
 
 zona = Gui.Selection.getSelectionEx()[0] # pegar uma zona somente
+zona.Object.Shape.CenterOfMass
 
 p = zona.Object.Points
 tamanho = len(p)

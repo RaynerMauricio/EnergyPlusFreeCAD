@@ -3,3 +3,6 @@
 - definir paredes externas
 - definir paredes geminadas
 - fazer os pontos relativos de cada zona
+
+
+# pegar o CG do ambiente
